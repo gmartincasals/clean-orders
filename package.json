@@ -1,0 +1,26 @@
+{
+  "name": "clean-orders",
+  "version": "1.0.0",
+  "description": "- ** Domionio **:Order, Price, SKU, Quantity, eventos de dominio. - ** Application **: casos de uso CreateOrder, AddItemOrder, puetos y DTOs. - ** Infraestructura **: repositorio InMemory, pricing estático, event bus no-op. - ** HTTP **: endpoints minimos con Fistify. - **Composición **: container.ts comocomposition root. - ** Tests **: dominio + aceptación de casos de uso.",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/main.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "fastify": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.5",
+    "zod": "^3.23.8"
+  }
+}
