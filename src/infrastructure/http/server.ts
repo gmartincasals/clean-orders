@@ -86,17 +86,23 @@ export class Server {
     // Instanciar casos de uso
     const createOrderUseCase = new CreateOrderUseCase(
       dependencies.orderRepository,
-      dependencies.eventBus
+      dependencies.eventBus,
+      dependencies.logger
     );
 
     const addItemToOrderUseCase = new AddItemToOrderUseCase(
       dependencies.orderRepository,
       dependencies.pricingService,
-      dependencies.eventBus
+      dependencies.eventBus,
+      dependencies.logger
     );
 
     // Instanciar y registrar controlador
-    const ordersController = new OrdersController(createOrderUseCase, addItemToOrderUseCase);
+    const ordersController = new OrdersController(
+      createOrderUseCase,
+      addItemToOrderUseCase,
+      dependencies.logger
+    );
     ordersController.registerRoutes(this.fastify);
 
     this.fastify.log.info('Routes registered successfully');

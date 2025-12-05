@@ -2,6 +2,7 @@ import { isNotFoundError, isValidationError } from '@application/errors/AppError
 import { AddItemToOrderUseCase } from '@application/use-cases/AddItemToOrderUseCase.js';
 import { CreateOrderUseCase } from '@application/use-cases/CreateOrderUseCase.js';
 import { StaticPricingService } from '@infrastructure/http/StaticPricingService.js';
+import { NoopLogger } from '@infrastructure/logging/NoopLogger.js';
 import { NoopEventBus } from '@infrastructure/messaging/NoopEventBus.js';
 import { InMemoryOrderRepository } from '@infrastructure/persistence/in-memory/InMemoryOrderRepository.js';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -12,6 +13,7 @@ describe('AddItemToOrder - Acceptance Test', () => {
   let eventBus: NoopEventBus;
   let createOrderUseCase: CreateOrderUseCase;
   let addItemToOrderUseCase: AddItemToOrderUseCase;
+  const logger = new NoopLogger();
 
   beforeEach(() => {
     // Configurar adaptadores en memoria
@@ -20,8 +22,8 @@ describe('AddItemToOrder - Acceptance Test', () => {
     eventBus = new NoopEventBus(false); // Sin logging en tests
 
     // Instanciar casos de uso
-    createOrderUseCase = new CreateOrderUseCase(orderRepository, eventBus);
-    addItemToOrderUseCase = new AddItemToOrderUseCase(orderRepository, pricingService, eventBus);
+    createOrderUseCase = new CreateOrderUseCase(orderRepository, eventBus, logger);
+    addItemToOrderUseCase = new AddItemToOrderUseCase(orderRepository, pricingService, eventBus, logger);
   });
 
   describe('Happy Path', () => {

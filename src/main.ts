@@ -1,4 +1,4 @@
-import { createDependencies } from './composition/container.js';
+import { closeContainer, createDependencies } from './composition/container.js';
 import { Server } from './infrastructure/http/server.js';
 
 /**
@@ -23,6 +23,12 @@ class Application {
       // Crear las dependencias usando el contenedor
       const dependencies = createDependencies();
 
+      // Log inicial
+      dependencies.logger.info('Starting application', {
+        environment: process.env.NODE_ENV ?? 'development',
+        useInMemory: process.env.USE_INMEMORY === 'true',
+      });
+
       // Configurar el servidor
       const serverConfig = {
         host: process.env.HOST ?? '0.0.0.0',
@@ -39,10 +45,13 @@ class Application {
       console.log('✓ Clean Orders API started successfully');
       console.log(`✓ Server running on http://${serverConfig.host}:${serverConfig.port}`);
       console.log(`✓ Environment: ${process.env.NODE_ENV ?? 'development'}`);
+      console.log(`✓ Storage: ${process.env.USE_INMEMORY === 'true' ? 'InMemory' : 'PostgreSQL'}`);
       console.log('\nAvailable endpoints:');
       console.log('  GET  /health');
       console.log('  POST /orders');
       console.log('  POST /orders/:id/items');
+
+      dependencies.logger.info('Application started successfully');
     } catch (error) {
       console.error('Failed to start application:', error);
       throw error;
@@ -61,10 +70,14 @@ class Application {
     try {
       console.log('\nStopping Clean Orders API...');
 
+      // Detener el servidor HTTP
       if (this.server) {
         await this.server.stop();
         this.server = null;
       }
+
+      // Cerrar el contenedor (cierra database, messaging, etc.)
+      await closeContainer();
 
       this.isRunning = false;
       console.log('✓ Application stopped successfully');
@@ -131,6 +144,7 @@ function setupGracefulShutdown(application: Application): void {
 
       try {
         await application.stop();
+        console.log('Graceful shutdown completed');
         process.exit(0);
       } catch (error) {
         console.error('Error during shutdown:', error);

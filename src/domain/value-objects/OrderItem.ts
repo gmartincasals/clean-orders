@@ -1,4 +1,4 @@
-import { Result, ok, fail } from '../../shared/Results.js';
+import { Result, ok } from '../../shared/Results.js';
 import { ProductId } from './ProductId.js';
 import { Quantity } from './Quantity.js';
 import { Money } from './Money.js';

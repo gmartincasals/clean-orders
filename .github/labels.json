@@ -1,0 +1,87 @@
+[
+  {
+    "name": "domain",
+    "color": "0052CC",
+    "description": "Changes to domain layer"
+  },
+  {
+    "name": "application",
+    "color": "5319E7",
+    "description": "Changes to application layer"
+  },
+  {
+    "name": "infrastructure",
+    "color": "D93F0B",
+    "description": "Changes to infrastructure layer"
+  },
+  {
+    "name": "tests",
+    "color": "0E8A16",
+    "description": "Changes to tests"
+  },
+  {
+    "name": "database",
+    "color": "C5DEF5",
+    "description": "Database migrations or schema changes"
+  },
+  {
+    "name": "documentation",
+    "color": "0075CA",
+    "description": "Documentation changes"
+  },
+  {
+    "name": "ci/cd",
+    "color": "FBCA04",
+    "description": "CI/CD pipeline changes"
+  },
+  {
+    "name": "size/XS",
+    "color": "00FF00",
+    "description": "Extra small PR (< 50 lines)"
+  },
+  {
+    "name": "size/S",
+    "color": "BFFF00",
+    "description": "Small PR (< 200 lines)"
+  },
+  {
+    "name": "size/M",
+    "color": "FFFF00",
+    "description": "Medium PR (< 500 lines)"
+  },
+  {
+    "name": "size/L",
+    "color": "FF8C00",
+    "description": "Large PR (< 1000 lines)"
+  },
+  {
+    "name": "size/XL",
+    "color": "FF0000",
+    "description": "Extra large PR (> 1000 lines)"
+  },
+  {
+    "name": "bug",
+    "color": "D73A4A",
+    "description": "Something isn't working"
+  },
+  {
+    "name": "enhancement",
+    "color": "A2EEEF",
+    "description": "New feature or request"
+  },
+  {
+    "name": "refactor",
+    "color": "FEF2C0",
+    "description": "Code refactoring"
+  },
+  {
+    "name": "security",
+    "color": "EE0701",
+    "description": "Security-related changes"
+  },
+  {
+    "name": "breaking-change",
+    "color": "B60205",
+    "description": "Breaking API changes"
+  }
+]

@@ -1,5 +1,6 @@
 import { Clock } from './Clock.js';
 import { EventBus } from './EventBus.js';
+import { Logger } from './Logger.js';
 import { OrderRepository } from './OrderRepository.js';
 import { PricingService } from './PricingService.js';
 
@@ -27,4 +28,9 @@ export interface ServerDependencies {
    * Reloj del sistema
    */
   clock: Clock;
+
+  /**
+   * Logger de la aplicación
+   */
+  logger: Logger;
 }

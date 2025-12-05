@@ -1,6 +1,7 @@
 import { AddItemToOrderDTO } from '@application/dto/AddItemToOrderDTO.js';
 import { CreateOrderDTO } from '@application/dto/CreateOrderDTO.js';
 import { AppError } from '@application/errors/AppError.js';
+import { Logger } from '@application/ports/Logger.js';
 import { AddItemToOrderUseCase } from '@application/use-cases/AddItemToOrderUseCase.js';
 import { CreateOrderUseCase } from '@application/use-cases/CreateOrderUseCase.js';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
@@ -24,33 +25,6 @@ interface GetOrderRequest {
 /**
  * Interfaces para las respuestas
  */
-interface MoneyResponse {
-  amount: number;
-  currency: string;
-}
-
-interface OrderItemResponse {
-  productId: string;
-  quantity: number;
-  unitPrice: MoneyResponse;
-  subtotal: MoneyResponse;
-}
-
-interface OrderResponse {
-  orderId: string;
-  items: OrderItemResponse[];
-  total: MoneyResponse;
-  createdAt: Date;
-}
-
-interface ErrorResponse {
-  error: string;
-  message: string;
-  field?: string;
-  resource?: string;
-  id?: string;
-  reason?: string;
-}
 
 /**
  * Controlador de pedidos para Fastify
@@ -59,7 +33,8 @@ interface ErrorResponse {
 export class OrdersController {
   constructor(
     private readonly createOrderUseCase: CreateOrderUseCase,
-    private readonly addItemToOrderUseCase: AddItemToOrderUseCase
+    private readonly addItemToOrderUseCase: AddItemToOrderUseCase,
+    private readonly logger: Logger
   ) {}
 
   /**
@@ -93,6 +68,9 @@ export class OrdersController {
     request: FastifyRequest<CreateOrderRequest>,
     reply: FastifyReply
   ): Promise<void> {
+    const requestLogger = this.logger.child({ requestId: request.id });
+    requestLogger.info('POST /orders - Creating order', { body: request.body });
+
     const dto: CreateOrderDTO = {
       orderId: request.body.orderId,
     };
@@ -100,6 +78,7 @@ export class OrdersController {
     const result = await this.createOrderUseCase.execute(dto);
 
     if (!result.ok) {
+      requestLogger.warn('Failed to create order', { error: result.error });
       this.handleError(result.error, reply);
       return;
     }
@@ -112,7 +91,7 @@ export class OrdersController {
       ? { amount: totalResult.value.amount, currency: totalResult.value.currency.code }
       : { amount: 0, currency: 'USD' };
 
-    reply.status(201).send({
+    const response = {
       orderId: order.id.value,
       items: order.items.map((item) => {
         const subtotalResult = item.calculateSubtotal();
@@ -133,7 +112,10 @@ export class OrdersController {
       }),
       total,
       createdAt: order.createdAt,
-    });
+    };
+
+    requestLogger.info('Order created successfully', { orderId: order.id.value });
+    reply.status(201).send(response);
   }
 
   /**
@@ -144,6 +126,12 @@ export class OrdersController {
     request: FastifyRequest<AddItemToOrderRequest>,
     reply: FastifyReply
   ): Promise<void> {
+    const requestLogger = this.logger.child({ requestId: request.id });
+    requestLogger.info('POST /orders/:id/items - Adding item to order', { 
+      orderId: request.params.id,
+      body: request.body 
+    });
+
     const dto: AddItemToOrderDTO = {
       orderId: request.params.id,
       productId: request.body.productId,
@@ -153,6 +141,7 @@ export class OrdersController {
     const result = await this.addItemToOrderUseCase.execute(dto);
 
     if (!result.ok) {
+      requestLogger.warn('Failed to add item to order', { error: result.error });
       this.handleError(result.error, reply);
       return;
     }
@@ -165,7 +154,7 @@ export class OrdersController {
       ? { amount: totalResult.value.amount, currency: totalResult.value.currency.code }
       : { amount: 0, currency: 'USD' };
 
-    reply.status(200).send({
+    const response = {
       orderId: order.id.value,
       items: order.items.map((item) => {
         const subtotalResult = item.calculateSubtotal();
@@ -186,7 +175,10 @@ export class OrdersController {
       }),
       total,
       createdAt: order.createdAt,
-    });
+    };
+
+    requestLogger.info('Item added to order successfully', { orderId: order.id.value });
+    reply.status(200).send(response);
   }
 
   /**

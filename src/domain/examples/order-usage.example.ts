@@ -8,7 +8,8 @@ import { ProductId } from '../value-objects/ProductId.js';
 import { Quantity } from '../value-objects/Quantity.js';
 import { Money } from '../value-objects/Money.js';
 import { Currency } from '../value-objects/Currency.js';
-import { OrderId } from '../value-objects/OrderId.js';
+// OrderId no usado en este ejemplo
+// import { OrderId } from '../value-objects/OrderId.js';
 
 export function orderUsageExample(): void {
   console.log('=== Ejemplo de uso del modelo de dominio Order ===\n');
